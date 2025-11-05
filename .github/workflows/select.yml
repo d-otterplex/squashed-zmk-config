@@ -20,4 +20,4 @@ jobs:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
     with:
       config_path: "configs/${{ inputs.config_override }}"
-      build_matrix_path: "matrices/${{ inputs.matrix_requested }}"
+      build_matrix_path: "mx-builds/${{ inputs.matrix_requested }}"

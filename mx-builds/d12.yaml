@@ -1,0 +1,4 @@
+---
+include:
+  - board: d12_left
+  - board: d12_right
