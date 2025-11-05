@@ -1,0 +1,23 @@
+---
+name: Manually build ZMK firmware
+run-name: '${{ github.actor }} started run on ${{ inputs.matrix_requested }}'
+on:
+  workflow_dispatch:
+    inputs:
+      config_override:
+        description: "override config directory"
+        required: false
+        type: string
+        default: "default"
+      matrix_requested:
+        description: "matrix yaml filename"
+        required: true
+        type: string
+        default: "default.yaml"
+
+jobs:
+  build:
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+    with:
+      config_path: "configs/${{ inputs.config_override }}"
+      build_matrix_path: "matrices/${{ inputs.matrix_requested }}"
