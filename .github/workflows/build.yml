@@ -1,6 +1,17 @@
-name: Build ZMK firmware
-on: [push, pull_request, workflow_dispatch]
+---
+name: Build ZMK firmware on testing branch push
+run-name: '${{ github.ref_name }}: ${{ github.event.head_commit.message || github.event.pull_request.title || github.sha }}'
+on:
+  push:
+    branches-ignore:
+      - 'main'
+  pull_request:
+    branches-ignore:
+      - 'main'
 
 jobs:
   build:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+    with:
+      config_path: "configs/default"
+      build_matrix_path: "matrices/default.yaml"
