@@ -4,11 +4,6 @@ run-name: '${{ github.actor }} started run on ${{ inputs.matrix_requested }}'
 on:
   workflow_dispatch:
     inputs:
-      config_override:
-        description: "override config directory"
-        required: false
-        type: string
-        default: "default"
       matrix_requested:
         description: "matrix file base name"
         required: true
@@ -19,5 +14,4 @@ jobs:
   build:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
     with:
-      config_path: "configs/${{ inputs.config_override }}"
       build_matrix_path: "mx-builds/${{ inputs.matrix_requested }}.yaml"
