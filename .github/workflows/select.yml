@@ -1,6 +1,6 @@
 ---
 name: Manually build ZMK firmware
-run-name: '${{ github.actor }} started run on ${{ inputs.matrix_requested }}'
+run-name: '${{ github.actor }} started run on ${{ inputs.mx-list-input }}'
 on:
   workflow_dispatch:
     inputs:
