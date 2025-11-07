@@ -1,10 +1,10 @@
 ---
 name: Manually build ZMK firmware
-run-name: '${{ github.actor }} started run on ${{ inputs.mx-list-input }}'
+run-name: '${{ github.actor }} started run on ${{ inputs.mx-list_input }}'
 on:
   workflow_dispatch:
     inputs:
-      mx-list-input:
+      mx-list_input:
         description: "List of comma separated matrix base filenames"
         required: true
         type: string
