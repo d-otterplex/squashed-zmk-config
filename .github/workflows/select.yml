@@ -22,8 +22,7 @@ jobs:
       - name: List from input
         id: parse
         run: |
-          parsed-list="$(echo '"${{ inputs.mx-list_input }}"' | jq -c 'split(",")')"
-          echo "mx-list=$parsed-list" >> "$GITHUB_OUTPUT"
+          env parsed-list="$(echo '"${{ inputs.mx-list_input }}"' | jq -c 'split(",")')" echo "mx-list=$parsed-list" >> "$GITHUB_OUTPUT"
 
   build:
     name: Build firmwares from list of inputs
