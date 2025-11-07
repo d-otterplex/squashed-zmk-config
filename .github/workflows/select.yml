@@ -1,45 +1,36 @@
 ---
 name: Manually build ZMK firmware
-run-name: run started on ${{ inputs.build-required }} ${{ inputs.build-optional-1 }}${{ inputs.build-optional-2 }}
+run-name: '${{ github.actor }} started run on ${{ inputs.mx-list-input }}'
 on:
   workflow_dispatch:
     inputs:
-      build-required:
-        description: "input matrix base file name"
+      mx-list-input:
+        description: "List of comma separated matrix base filenames"
         required: true
         type: string
         default: "default"
-      build-optional-1:
-        description: "first extra matrix"
-        required: false
-        type: string
-        default: ""
-      build-optional-2:
-        description: "second extra matrix"
-        required: false
-        type: string
-        default: ""
 
 jobs:
-  build-input:
-    name: "build ${{ inputs.build-required }}"
+  gen-matrix-matrix:
+    name: "Generate matrices from input"
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrices: ${{ steps.parse.outputs.mx-list }}
+
+    steps:
+      - name: List from input
+        id: parse
+        run: |
+          parsed-list="$(echo '"${{ inputs.mx-list_input }}"' | jq -c 'split(",")')"
+          echo "mx-list=$parsed-list" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build firmwares from list of inputs
+    needs: gen-matrix-matrix
+    strategy:
+      matrix:
+        elements: ${{ fromJSON(needs.gen-matrix-matrix.outputs.matrices) }}
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
     with:
-      archive_name: ${{ inputs.build-required }}
-      build_matrix_path: "mx-builds/${{ inputs.build-required }}.yaml"
-  optional-build-1:
-    name: "build ${{ inputs.build-optional-1 }}"
-    needs: build-input
-    if: ${{ inputs.build-optional-1 }}
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
-    with:
-      archive_name: ${{ inputs.build-optional-1 }}
-      build_matrix_path: "mx-builds/${{ inputs.build-optional-1 }}.yaml"
-  optional-build-2:
-    name: "build ${{ inputs.build-optional-2 }}"
-    needs: optional-build-1
-    if: ${{ inputs.build-optional-2 }}
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
-    with:
-      archive_name: ${{ inputs.build-optional-2 }}
-      build_matrix_path: "mx-builds/${{ inputs.build-optional-2 }}.yaml"
+      build_matrix_path: "mx-builds/${{ matrix.elements }}.yaml"
