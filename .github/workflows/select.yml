@@ -1,6 +1,6 @@
 ---
 name: Manually build ZMK firmware
-run-name: run started on ${{ inputs.build-required }}${{ inputs.build-optional-1 || format(', {0}', inputs.build-optional-1) }}${{ inputs.build-optional-2 || format(', {0}' inputs.build-optional-2 }}
+run-name: run started on ${{ inputs.build-required }}${{ inputs.build-optional-1 || format(', {0}', inputs.build-optional-1) }}${{ inputs.build-optional-2 || format(', {0}', inputs.build-optional-2) }}
 on:
   workflow_dispatch:
     inputs:
