@@ -4,14 +4,71 @@ run-name: '${{ github.actor }} started run on ${{ inputs.matrix_requested }}'
 on:
   workflow_dispatch:
     inputs:
-      matrix_requested:
-        description: "matrix file base name"
+      mx-list-input:
+        description: "List of comma separated matrix base filenames"
         required: true
         type: string
         default: "default"
+#      matrix_requested0:
+#        description: "required matrix file base name"
+#        required: true
+#        type: string
+#        default: "default"
+#      matrix_requested1:
+#        description: "first extra matrix"
+#        required: false
+#        type: string
+#        default: "none"
+#      matrix_requested2:
+#        description: "second extra matrix"
+#        required: false
+#        type: string
+#        default: "none"
 
 jobs:
+  gen-matrix-matrix:
+    name: "Generate matrices from input"
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrices: ${{ steps.parse.outputs.mx-list }}
+
+    steps:
+      - name: List from input
+        id: parse
+        run: |
+          parsed-list="$(echo '"${{ inputs.mx-list_input }}"' | jq -c 'split(",")')"
+          echo "mx-list=$parsed-list" >> "$GITHUB_OUTPUT"
+
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
-    with:
-      build_matrix_path: "mx-builds/${{ inputs.matrix_requested }}.yaml"
+    runs-on: ubuntu-latest
+    name: Build firmwares from list of inputs
+    needs: gen-matrix-matrix
+    strategy:
+      matrix:
+        elements: ${{ fromJSON(needs.gen-matrix-matrix.outputs.matrices) }}
+
+    steps:
+      - name: Report input list element
+        run: |
+          echo ${{ matrix.elements }}
+
+      - name: Make from matrix YAML
+        uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+        with:
+          build_matrix_path: "mx-builds/${{ matrix.elements }}.yaml"
+#  build-required:
+#    name: "build ${{ inputs.matrix_requested0 }}"
+#    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+#    with:
+#      build_matrix_path: "mx-builds/${{ inputs.matrix_requested0 }}.yaml"
+#  build-optional-1:
+#    name: "build ${{ inputs.matrix_requested1 }}"
+#    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+#    with:
+#      build_matrix_path: "mx-builds/${{ inputs.matrix_requested1 }}.yaml"
+#  build-optional-2:
+#    name: "build ${{ inputs.matrix_requested2 }}"
+#    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+#    with:
+#      build_matrix_path: "mx-builds/${{ inputs.matrix_requested2 }}.yaml"
