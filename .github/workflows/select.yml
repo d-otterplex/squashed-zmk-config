@@ -27,16 +27,18 @@ jobs:
     with:
       archive_name: ${{ inputs.build-required }}
       build_matrix_path: "mx-builds/${{ inputs.build-required }}.yaml"
-  build-extra-1:
-    if: ${{ inputs.build-optional-1 }}
+  optional-build-1:
     name: "build ${{ inputs.build-optional-1 }}"
+    needs: build-input
+    if: ${{ inputs.build-optional-1 }}
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
     with:
       archive_name: ${{ inputs.build-optional-1 }}
       build_matrix_path: "mx-builds/${{ inputs.build-optional-1 }}.yaml"
-  build-extra-2:
-    if: ${{ inputs.build-optional-2 }}
+  optional-build-2:
     name: "build ${{ inputs.build-optional-2 }}"
+    needs: optional-build-1
+    if: ${{ inputs.build-optional-2 }}
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
     with:
       archive_name: ${{ inputs.build-optional-2 }}
