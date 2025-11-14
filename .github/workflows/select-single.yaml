@@ -1,0 +1,17 @@
+---
+name: Manually build ZMK firmware from single matrix file
+run-name: '${{ github.actor }} started run on ${{ inputs.matrix_requested }}'
+on:
+  workflow_dispatch:
+    inputs:
+      matrix_requested:
+        description: "matrix file base name"
+        required: true
+        type: string
+        default: "default"
+
+jobs:
+  build:
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+    with:
+      build_matrix_path: "mx-builds/${{ inputs.matrix_requested }}.yaml"
