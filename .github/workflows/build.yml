@@ -13,4 +13,4 @@ jobs:
   build:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
     with:
-      build_matrix_path: "mx-builds/default.yaml"
+      build_matrix_path: 'mx-builds/${{ github.ref_name }}.yaml'

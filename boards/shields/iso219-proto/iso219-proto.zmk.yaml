@@ -1,0 +1,8 @@
+file_format: 1
+id: iso219-proto
+name: iso219-proto
+type: shield
+requires:
+  - seeed_xiao
+features:
+  - keys
